@@ -11,12 +11,17 @@
   src="https://code.jquery.com/jquery-3.6.0.min.js"
   integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
   crossorigin="anonymous"></script>
+      <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a830d971a52319b58be82b7b2e82fcfe&libraries=services"></script>
   </head>
   <body>
     <div id="navbar">myfirstmap</div>
     <div id="infoBox">
       <div id="infoTitle">현재 날짜</div>
       <div id="infoContent">2020. 07. 10</div>
+    </div>
+    <div id="search">
+      <input type="text" id="search_input" placeholder="목적지를 입력해 주세요">
+      <button id="search_button">검색</button>
     </div>
 
     <div id="current">현재 위치</div>
@@ -118,6 +123,45 @@
           alert('위치정보 사용 불가능')
         }
       })
+
+      let ps = new kakao.maps.services.Places()
+      let search_arr = []
+
+      $('#search_input').on('keydown', function(e){
+        if(e.keyCode === 13){
+          let content = $(this).val()
+          ps.keywordSearch(content, placeSearchCB)
+        }
+      })
+
+      $('#search_button').on('click', function(e) {
+        let content = $('#search_input').val()
+        ps.keywordSearch(content, placeSearchCB)
+      })
+
+      function placeSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+          let target = data[0]
+          const lat = target.y
+          const lng = target.x
+          const latlng = new naver.maps.LatLng(lat, lng);
+          marker = new naver.maps.Marker({
+            position: latlng,
+            map: map
+          })
+          if (search_arr.length === 0) {
+            search_arr.push(marker)
+          } else {
+            search_arr.push(marker)
+            let pre_marker = search_arr.splice(0,1)
+            pre_marker[0].setMap(null)
+          }
+          map.setZoom(14, false);
+          map.panTo(latlng);
+        } else {
+          alert('검색 결과가 없습니다.')
+        }
+      }
     </script>
   </body>
 </html>

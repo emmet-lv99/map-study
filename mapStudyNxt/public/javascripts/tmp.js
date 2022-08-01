@@ -10,11 +10,7 @@ $.ajax({
   type: "GET",
 }).done((response) => {
   if (response.message !== "success") return
-
-  const data = response.data
-
-  let markerList = []
-  let infowindowList = []
+  const data = reponse.data
 
   const getClickMap = (i) => () => {
     const infowindow = infowindowList[i]

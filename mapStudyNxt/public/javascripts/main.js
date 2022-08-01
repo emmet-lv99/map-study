@@ -16,6 +16,16 @@ $.ajax({
   let markerList = []
   let infowindowList = []
 
+  const getClickHandler = (i) => () => {
+    const marker = markerList[i]
+    const infowindow = infowindowList[i]
+    if (infowindow.getMap()) {
+      infowindow.close()
+    } else {
+      infowindow.open(map, marker)
+    }
+  }
+
   const getClickMap = (i) => () => {
     const infowindow = infowindowList[i]
     infowindow.close()
@@ -35,11 +45,11 @@ $.ajax({
     })
 
     const content = `
-    <div class="infowindow_wrap">
-      <div class="infowindow_title">${target.title}</div>
-      <div class="infowindow_address">${target.address}</div>
-    </div>
-    `
+  <div class="infowindow_wrap">
+    <div class="infowindow_title">${target.title}</div>
+    <div class="infowindow_address">${target.address}</div>
+  </div>
+  `
 
     const infowindow = new naver.maps.InfoWindow({
       content: content,
